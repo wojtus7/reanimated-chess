@@ -14,7 +14,7 @@ export default function Figure({chessboardSquareSize, onPressSquare}) {
           (j + i) % 2 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
       };
       lineComponents.push(
-        <Pressable onPress={() => onPressSquare(i, j)}>
+        <Pressable onPress={() => onPressSquare({x: j, y: i})}>
           <View key={`square_${i}_${j}`} style={componentStyle} />
         </Pressable>,
       );

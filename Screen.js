@@ -12,8 +12,16 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={styles.container}>
-      <Chessboard chessboardSquareSize={windowWidth} onPress={pressSquare} />
-      <Figure sizeOfSquare={windowWidth} onPress={pressSquare} />
+      <Chessboard
+        chessboardSquareSize={windowWidth}
+        onPressSquare={pressSquare}
+      />
+      <Figure
+        sizeOfSquare={windowWidth}
+        onPress={pressSquare}
+        figure={'P'}
+        initialPosition={{x: 4, y: 1}}
+      />
     </View>
   );
 }

@@ -6,21 +6,32 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import {Dimensions, StyleSheet} from 'react-native';
-import React from 'react';
+import {Pressable} from 'react-native';
+import React, {useState} from 'react';
 
-const windowWidth = Dimensions.get('window').width / 8;
-
-export default function Figure({sizeOfSquare}) {
-  const x = useSharedValue(0);
-  const y = useSharedValue(0);
+export default function Figure({
+  sizeOfSquare,
+  onPress,
+  figure,
+  initialPosition,
+}) {
+  const [position, setPosition] = useState({
+    x: initialPosition.x,
+    y: initialPosition.y,
+  });
+  const x = useSharedValue(initialPosition.x * sizeOfSquare);
+  const y = useSharedValue(initialPosition.y * sizeOfSquare);
 
   const startMovement = () => {
     console.log('start movement');
   };
 
-  const endMovement = (position) => {
-    console.log(position);
+  const endMovement = (newPosition) => {
+    setPosition(newPosition);
+  };
+
+  const handlePress = () => {
+    onPress({figure, ...position});
   };
 
   const calculatePosition = (pixelValue) => {
@@ -50,7 +61,7 @@ export default function Figure({sizeOfSquare}) {
       x.value = withTiming(xIndex * sizeOfSquare);
       y.value = withTiming(yIndex * sizeOfSquare);
 
-      runOnJS(endMovement)({xIndex, yIndex});
+      runOnJS(endMovement)({x: xIndex, y: yIndex});
       // x.value = withTiming(0);
       // x.value = withTiming(0);
     },
@@ -71,11 +82,20 @@ export default function Figure({sizeOfSquare}) {
 
   return (
     <PanGestureHandler onGestureEvent={gestureHandler}>
-      <Animated.View style={[styles.chessman, animatedStyle]} />
+      <Animated.View
+        style={[
+          {
+            width: sizeOfSquare,
+            height: sizeOfSquare,
+            backgroundColor: 'black',
+          },
+          animatedStyle,
+        ]}>
+        <Pressable
+          onPress={handlePress}
+          style={{width: sizeOfSquare, height: sizeOfSquare}}
+        />
+      </Animated.View>
     </PanGestureHandler>
   );
 }
-
-const styles = StyleSheet.create({
-  chessman: {width: windowWidth, height: windowWidth, backgroundColor: 'black'},
-});
