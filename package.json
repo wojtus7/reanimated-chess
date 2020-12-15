@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "expo-asset": "^8.2.0",
+    "js-chess-engine": "^0.5.1",
     "react": "16.13.1",
     "react-dom": "^16.13.1",
     "react-native": "0.63.1",
