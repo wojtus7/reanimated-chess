@@ -28,6 +28,8 @@ export default function Figure({
 
   const endMovement = (newPosition) => {
     setPosition(newPosition);
+    x.value = withTiming(newPosition.x * sizeOfSquare);
+    y.value = withTiming(newPosition.y * sizeOfSquare);
   };
 
   const handlePress = () => {
@@ -57,9 +59,6 @@ export default function Figure({
     onEnd: (_) => {
       const xIndex = calculatePosition(x.value);
       const yIndex = calculatePosition(y.value);
-
-      x.value = withTiming(xIndex * sizeOfSquare);
-      y.value = withTiming(yIndex * sizeOfSquare);
 
       runOnJS(endMovement)({x: xIndex, y: yIndex});
       // x.value = withTiming(0);

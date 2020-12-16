@@ -2,12 +2,16 @@ import {View, Dimensions, StyleSheet} from 'react-native';
 import React from 'react';
 import Figure from './components/Figure';
 import Chessboard from './components/Chessboard';
+import {Game} from 'js-chess-engine';
+import {convertIndexToName, convertNameToIndex} from './helpers/Converters';
 
 const windowWidth = Dimensions.get('window').width / 8;
 
 export default function AnimatedStyleUpdateExample() {
-  const pressSquare = (squareOjb) => {
-    console.log(squareOjb);
+  const game = new Game();
+
+  const pressSquare = (squareObj) => {
+    console.log(game.moves(convertIndexToName(squareObj)));
   };
 
   return (
@@ -20,7 +24,7 @@ export default function AnimatedStyleUpdateExample() {
         sizeOfSquare={windowWidth}
         onPress={pressSquare}
         figure={'P'}
-        initialPosition={{x: 4, y: 1}}
+        initialPosition={{x: 4, y: 6}}
       />
     </View>
   );
