@@ -14,22 +14,35 @@ export default function Figure({
   onPress,
   figure,
   initialPosition,
+  startMoveFigure,
+  endMoveFigure,
 }) {
   const [position, setPosition] = useState({
+    x: initialPosition.x,
+    y: initialPosition.y,
+  });
+  const [temporaryPosition, setTemporaryPosition] = useState({
     x: initialPosition.x,
     y: initialPosition.y,
   });
   const x = useSharedValue(initialPosition.x * sizeOfSquare);
   const y = useSharedValue(initialPosition.y * sizeOfSquare);
 
-  const startMovement = () => {
-    console.log('start movement');
+  const startMovement = (newPosition) => {
+    startMoveFigure({figure, ...position});
+    setTemporaryPosition(newPosition);
   };
 
   const endMovement = (newPosition) => {
-    setPosition(newPosition);
-    x.value = withTiming(newPosition.x * sizeOfSquare);
-    y.value = withTiming(newPosition.y * sizeOfSquare);
+    try {
+      endMoveFigure(newPosition);
+      setPosition(newPosition);
+      x.value = withTiming(newPosition.x * sizeOfSquare);
+      y.value = withTiming(newPosition.y * sizeOfSquare);
+    } catch (error) {
+      x.value = withTiming(temporaryPosition.x * sizeOfSquare);
+      y.value = withTiming(temporaryPosition.y * sizeOfSquare);
+    }
   };
 
   const handlePress = () => {
@@ -50,7 +63,10 @@ export default function Figure({
     onStart: (_, ctx) => {
       ctx.startX = x.value;
       ctx.startY = y.value;
-      runOnJS(startMovement)();
+      const xIndex = calculatePosition(x.value);
+      const yIndex = calculatePosition(y.value);
+
+      runOnJS(startMovement)({x: xIndex, y: yIndex});
     },
     onActive: (event, ctx) => {
       x.value = ctx.startX + event.translationX;
