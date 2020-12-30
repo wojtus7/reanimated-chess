@@ -40,6 +40,7 @@ export default function Figure({
       x.value = withTiming(newPosition.x * sizeOfSquare);
       y.value = withTiming(newPosition.y * sizeOfSquare);
     } catch (error) {
+      console.log(error);
       x.value = withTiming(temporaryPosition.x * sizeOfSquare);
       y.value = withTiming(temporaryPosition.y * sizeOfSquare);
     }
@@ -77,8 +78,6 @@ export default function Figure({
       const yIndex = calculatePosition(y.value);
 
       runOnJS(endMovement)({x: xIndex, y: yIndex});
-      // x.value = withTiming(0);
-      // x.value = withTiming(0);
     },
   });
 
@@ -100,9 +99,11 @@ export default function Figure({
       <Animated.View
         style={[
           {
+            top: 100, // TODO: SUPER TEMPORARY REMOVE THIS YOU LAZY 💩
             width: sizeOfSquare,
             height: sizeOfSquare,
             backgroundColor: 'black',
+            position: 'absolute',
           },
           animatedStyle,
         ]}>

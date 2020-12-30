@@ -2,17 +2,18 @@ import {View, Dimensions, StyleSheet} from 'react-native';
 import React, {useState} from 'react';
 import Figure from './components/Figure';
 import Chessboard from './components/Chessboard';
-import {Game} from 'js-chess-engine';
-import {convertIndexToName, convertNameToIndex} from './helpers/Converters';
+import {Game, move, moves} from 'js-chess-engine';
+import {convertIndexToName} from './helpers/Converters';
 
 const squareWidth = Dimensions.get('window').width / 8;
 
 export default function AnimatedStyleUpdateExample() {
   const [startLocation, setStartLocation] = useState(undefined);
   const game = new Game();
+  const [gameState, setGameState] = useState(game.exportFEN());
 
   const checkAvailableMoves = (location) => {
-    console.log(game.moves(convertIndexToName(location)));
+    console.log(moves(gameState)[convertIndexToName(location)] || []);
   };
 
   const pressSquare = (location) => {
@@ -21,12 +22,17 @@ export default function AnimatedStyleUpdateExample() {
 
   const startMoveFigure = (location) => {
     checkAvailableMoves(location);
-    game.moves(convertIndexToName(location));
     setStartLocation(location);
   };
 
   const endMoveFigure = (location) => {
-    game.move(convertIndexToName(startLocation), convertIndexToName(location));
+    setGameState(
+      move(
+        gameState,
+        convertIndexToName(startLocation),
+        convertIndexToName(location),
+      ),
+    );
   };
 
   return (
@@ -42,6 +48,15 @@ export default function AnimatedStyleUpdateExample() {
         endMoveFigure={endMoveFigure}
         figure={'P'}
         initialPosition={{x: 4, y: 6}}
+      />
+
+      <Figure
+        sizeOfSquare={squareWidth}
+        onPress={pressSquare}
+        startMoveFigure={startMoveFigure}
+        endMoveFigure={endMoveFigure}
+        figure={'P'}
+        initialPosition={{x: 1, y: 1}}
       />
     </View>
   );

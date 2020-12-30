@@ -4553,10 +4553,10 @@ jetifier@^1.6.2:
   resolved "https://registry.yarnpkg.com/jetifier/-/jetifier-1.6.5.tgz#ea87324a4230bef20a9651178ecab978ee54a8cb"
   integrity sha512-T7yzBSu9PR+DqjYt+I0KVO1XTb1QhAfHnXV5Nd3xpbXM6Xg4e3vP60Q4qkNU8Fh6PHC2PivPUNN3rY7G2MxcDQ==
 
-js-chess-engine@^0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/js-chess-engine/-/js-chess-engine-0.5.1.tgz#7a82223d4803d8072ce7fa0daf1992ebcbac682b"
-  integrity sha512-6NgXaY6wM4uWHE1ndsIYPks3vW15t6/X8Dx5tvwhhE+m8zmQo47InqNAGl6YTjCRkPxiWF6YsfrT8j5UEN34dw==
+js-chess-engine@^0.5.2:
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/js-chess-engine/-/js-chess-engine-0.5.2.tgz#d0e19cbb0aa19fc4d5ee6091986771900269e6a9"
+  integrity sha512-VgadC0h4kd+VxvAebC27QhOvUZHB9avY6V4X5ZA/sqtQllC7a+4anUHSfT8Bcey1TChPdptI5LwiwPZfRiiBLQ==
 
 "js-tokens@^3.0.0 || ^4.0.0", js-tokens@^4.0.0:
   version "4.0.0"
