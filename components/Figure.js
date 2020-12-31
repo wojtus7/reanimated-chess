@@ -6,7 +6,7 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import {Pressable} from 'react-native';
+import {Pressable, Text} from 'react-native';
 import React, {useState} from 'react';
 
 export default function Figure({
@@ -16,6 +16,10 @@ export default function Figure({
   initialPosition,
   startMoveFigure,
   endMoveFigure,
+  isWhite,
+  currentMove,
+  isRemoved,
+  id,
 }) {
   const [position, setPosition] = useState({
     x: initialPosition.x,
@@ -35,7 +39,7 @@ export default function Figure({
 
   const endMovement = (newPosition) => {
     try {
-      endMoveFigure(newPosition);
+      endMoveFigure(newPosition, id);
       setPosition(newPosition);
       x.value = withTiming(newPosition.x * sizeOfSquare);
       y.value = withTiming(newPosition.y * sizeOfSquare);
@@ -77,7 +81,7 @@ export default function Figure({
       const xIndex = calculatePosition(x.value);
       const yIndex = calculatePosition(y.value);
 
-      runOnJS(endMovement)({x: xIndex, y: yIndex});
+      runOnJS(endMovement)({x: xIndex, y: yIndex, id});
     },
   });
 
@@ -95,22 +99,34 @@ export default function Figure({
   });
 
   return (
-    <PanGestureHandler onGestureEvent={gestureHandler}>
+    <PanGestureHandler
+      onGestureEvent={gestureHandler}
+      enabled={
+        !isRemoved &&
+        ((isWhite && currentMove === 'w') || (!isWhite && currentMove === 'b'))
+      }>
       <Animated.View
         style={[
           {
-            top: 100, // TODO: SUPER TEMPORARY REMOVE THIS YOU LAZY 💩
+            opacity: isRemoved ? 0 : 1,
             width: sizeOfSquare,
             height: sizeOfSquare,
-            backgroundColor: 'black',
+            backgroundColor: isWhite ? 'gray' : 'black',
             position: 'absolute',
+            zIndex: isRemoved
+              ? -100
+              : (isWhite && currentMove === 'w') ||
+                (!isWhite && currentMove === 'b')
+              ? 11
+              : 10,
           },
           animatedStyle,
         ]}>
         <Pressable
           onPress={handlePress}
-          style={{width: sizeOfSquare, height: sizeOfSquare}}
-        />
+          style={{width: sizeOfSquare, height: sizeOfSquare}}>
+          <Text style={{color: 'white'}}>{figure}</Text>
+        </Pressable>
       </Animated.View>
     </PanGestureHandler>
   );

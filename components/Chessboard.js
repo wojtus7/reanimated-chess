@@ -2,7 +2,11 @@ import {View, StyleSheet, Pressable, Text} from 'react-native';
 import React from 'react';
 import {convertIndexToName} from '../helpers/Converters';
 
-export default function Figure({chessboardSquareSize, onPressSquare}) {
+export default function Figure({
+  chessboardSquareSize,
+  onPressSquare,
+  currentPossibleMoves,
+}) {
   const chessboardSquares = [];
 
   for (let i = 0; i < 8; i++) {
@@ -18,7 +22,18 @@ export default function Figure({chessboardSquareSize, onPressSquare}) {
         <Pressable
           key={`square_${i}_${j}`}
           onPress={() => onPressSquare({x: j, y: i})}>
-          <View style={componentStyle}>
+          <View
+            style={[
+              componentStyle,
+              {
+                borderColor: currentPossibleMoves.includes(
+                  convertIndexToName({x: j, y: i}),
+                )
+                  ? 'green'
+                  : 'transparent',
+                borderWidth: 2,
+              },
+            ]}>
             <Text style={styles.text}>{convertIndexToName({x: j, y: i})}</Text>
           </View>
         </Pressable>,
@@ -35,7 +50,7 @@ export default function Figure({chessboardSquareSize, onPressSquare}) {
 }
 
 const styles = StyleSheet.create({
-  wrapper: {position: 'absolute', top: 100},
+  wrapper: {position: 'absolute'},
   row: {flexDirection: 'row'},
   text: {opacity: 0.3},
 });
