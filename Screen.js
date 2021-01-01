@@ -3,6 +3,7 @@ import {View, Dimensions, StyleSheet, Image} from 'react-native';
 import React, {useState} from 'react';
 import Figure from './components/Figure';
 import Chessboard from './components/Chessboard';
+import ChatWindow from './components/ChatWindow';
 import {status, move, moves} from 'js-chess-engine';
 import {
   convertIndexToName,
@@ -54,6 +55,7 @@ export default function AnimatedStyleUpdateExample() {
       const foundKey = findKey(figuresState, {
         x: newLocation.x,
         y: newLocation.y,
+        removed: false,
       });
       newFiguresState[foundKey].removed = true;
       newFiguresState[id].x = newLocation.x;
@@ -74,29 +76,32 @@ export default function AnimatedStyleUpdateExample() {
   const figures = convertFENtoFigures();
 
   return (
-    <View style={styles.container}>
-      <Chessboard
-        chessboardSquareWidth={squareWidth}
-        chessboardSquareHeight={squareHeight}
-        onPressSquare={pressSquare}
-        currentPossibleMoves={currentPossibleMoves}
-      />
-      {figures.map(({figure, x, y, isWhite, id}) => (
-        <Figure
-          squareWidth={squareWidth}
-          squareHeight={squareHeight}
-          onPress={pressSquare}
-          startMoveFigure={startMoveFigure}
-          endMoveFigure={endMoveFigure}
-          figure={figure}
-          initialPosition={{x, y}}
-          isWhite={isWhite}
-          currentMove={currentMoveColor}
-          key={id}
-          id={id}
-          isRemoved={figuresState[id].removed}
+    <View style={{flex: 1}}>
+      <View style={styles.container}>
+        <Chessboard
+          chessboardSquareWidth={squareWidth}
+          chessboardSquareHeight={squareHeight}
+          onPressSquare={pressSquare}
+          currentPossibleMoves={currentPossibleMoves}
         />
-      ))}
+        {figures.map(({figure, x, y, isWhite, id}) => (
+          <Figure
+            squareWidth={squareWidth}
+            squareHeight={squareHeight}
+            onPress={pressSquare}
+            startMoveFigure={startMoveFigure}
+            endMoveFigure={endMoveFigure}
+            figure={figure}
+            initialPosition={{x, y}}
+            isWhite={isWhite}
+            currentMove={currentMoveColor}
+            key={id}
+            id={id}
+            isRemoved={figuresState[id].removed}
+          />
+        ))}
+      </View>
+      <ChatWindow />
     </View>
   );
 }

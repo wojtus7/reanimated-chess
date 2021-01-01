@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import {Pressable} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import FastImage from 'react-native-fast-image';
 
 import {convertFigureToImagePath} from '../helpers/ImageProvider';
@@ -38,11 +38,18 @@ export default function Figure({
   const y = useSharedValue(initialPosition.y * squareHeight);
   const zIndex = useSharedValue(0);
   const scale = useSharedValue(1);
+  const opacity = useSharedValue(1);
 
   const startMovement = (newPosition) => {
     startMoveFigure({figure, ...position});
     setTemporaryPosition(newPosition);
   };
+
+  useEffect(() => {
+    if (isRemoved) {
+      opacity.value = withTiming(0);
+    }
+  }, [isRemoved, opacity]);
 
   const endMovement = (newPosition) => {
     try {
@@ -110,7 +117,7 @@ export default function Figure({
         },
       ],
       zIndex: isRemoved ? -10000 : y.value + zIndex.value + 100,
-      opacity: isRemoved ? 0 : 1,
+      opacity: opacity.value,
     };
   });
 
