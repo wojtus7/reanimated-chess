@@ -3,7 +3,8 @@ import React from 'react';
 import {convertIndexToName} from '../helpers/Converters';
 
 export default function Figure({
-  chessboardSquareSize,
+  chessboardSquareWidth,
+  chessboardSquareHeight,
   onPressSquare,
   currentPossibleMoves,
 }) {
@@ -13,10 +14,9 @@ export default function Figure({
     const lineComponents = [];
     for (let j = 0; j < 8; j++) {
       const componentStyle = {
-        height: chessboardSquareSize,
-        width: chessboardSquareSize,
-        backgroundColor:
-          (j + i) % 2 === 0 ? 'rgba(0,0,0,0.1)' : 'rgba(0,0,0,0.2)',
+        height: chessboardSquareHeight,
+        width: chessboardSquareWidth,
+        backgroundColor: (j + i) % 2 === 0 ? '#777e88' : '#4E5660',
       };
       lineComponents.push(
         <Pressable
@@ -26,6 +26,7 @@ export default function Figure({
             style={[
               componentStyle,
               {
+                opacity: 0.6,
                 borderColor: currentPossibleMoves.includes(
                   convertIndexToName({x: j, y: i}),
                 )
@@ -52,5 +53,5 @@ export default function Figure({
 const styles = StyleSheet.create({
   wrapper: {position: 'absolute'},
   row: {flexDirection: 'row'},
-  text: {opacity: 0.3},
+  text: {opacity: 0},
 });

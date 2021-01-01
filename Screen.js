@@ -1,5 +1,5 @@
 import {findKey} from 'lodash';
-import {View, Dimensions, StyleSheet} from 'react-native';
+import {View, Dimensions, StyleSheet, Image} from 'react-native';
 import React, {useState} from 'react';
 import Figure from './components/Figure';
 import Chessboard from './components/Chessboard';
@@ -10,7 +10,8 @@ import {
   convertFENtoIdOnBoard,
 } from './helpers/Converters';
 
-const squareWidth = Dimensions.get('window').width / 8;
+const squareWidth = (Dimensions.get('window').width - 30) / 8;
+const squareHeight = (Dimensions.get('window').width - 30) / 8 - 5;
 
 export default function AnimatedStyleUpdateExample() {
   const [startLocation, setStartLocation] = useState(undefined);
@@ -38,6 +39,7 @@ export default function AnimatedStyleUpdateExample() {
   };
 
   const endMoveFigure = (newLocation, id) => {
+    let shouldFight = false;
     setCurrentPossibleMoves([]);
     const oldGameState = gameState;
     const actualizedGameState = move(
@@ -47,6 +49,7 @@ export default function AnimatedStyleUpdateExample() {
     );
     if (status(oldGameState).pieces[convertIndexToName(newLocation)]) {
       console.log('hit');
+      shouldFight = true;
       const newFiguresState = figuresState;
       const foundKey = findKey(figuresState, {
         x: newLocation.x,
@@ -65,6 +68,7 @@ export default function AnimatedStyleUpdateExample() {
 
     setGameState(actualizedGameState);
     setCurrentMoveColor(actualizedGameState.split(' ')[1]);
+    return shouldFight;
   };
 
   const figures = convertFENtoFigures();
@@ -72,13 +76,15 @@ export default function AnimatedStyleUpdateExample() {
   return (
     <View style={styles.container}>
       <Chessboard
-        chessboardSquareSize={squareWidth}
+        chessboardSquareWidth={squareWidth}
+        chessboardSquareHeight={squareHeight}
         onPressSquare={pressSquare}
         currentPossibleMoves={currentPossibleMoves}
       />
       {figures.map(({figure, x, y, isWhite, id}) => (
         <Figure
-          sizeOfSquare={squareWidth}
+          squareWidth={squareWidth}
+          squareHeight={squareHeight}
           onPress={pressSquare}
           startMoveFigure={startMoveFigure}
           endMoveFigure={endMoveFigure}
@@ -100,5 +106,6 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     top: 100,
+    left: 15,
   },
 });

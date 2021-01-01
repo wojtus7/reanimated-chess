@@ -6,11 +6,15 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
-import {Pressable, Text} from 'react-native';
+import {Pressable} from 'react-native';
 import React, {useState} from 'react';
+import FastImage from 'react-native-fast-image';
+
+import {convertFigureToImagePath} from '../helpers/ImageProvider';
 
 export default function Figure({
-  sizeOfSquare,
+  squareWidth,
+  squareHeight,
   onPress,
   figure,
   initialPosition,
@@ -21,6 +25,7 @@ export default function Figure({
   isRemoved,
   id,
 }) {
+  const image = convertFigureToImagePath(figure);
   const [position, setPosition] = useState({
     x: initialPosition.x,
     y: initialPosition.y,
@@ -29,8 +34,10 @@ export default function Figure({
     x: initialPosition.x,
     y: initialPosition.y,
   });
-  const x = useSharedValue(initialPosition.x * sizeOfSquare);
-  const y = useSharedValue(initialPosition.y * sizeOfSquare);
+  const x = useSharedValue(initialPosition.x * squareWidth);
+  const y = useSharedValue(initialPosition.y * squareHeight);
+  const zIndex = useSharedValue(0);
+  const scale = useSharedValue(1);
 
   const startMovement = (newPosition) => {
     startMoveFigure({figure, ...position});
@@ -39,14 +46,14 @@ export default function Figure({
 
   const endMovement = (newPosition) => {
     try {
-      endMoveFigure(newPosition, id);
+      const shouldFight = endMoveFigure(newPosition, id);
       setPosition(newPosition);
-      x.value = withTiming(newPosition.x * sizeOfSquare);
-      y.value = withTiming(newPosition.y * sizeOfSquare);
+      x.value = withTiming(newPosition.x * squareWidth);
+      y.value = withTiming(newPosition.y * squareHeight);
     } catch (error) {
       console.log(error);
-      x.value = withTiming(temporaryPosition.x * sizeOfSquare);
-      y.value = withTiming(temporaryPosition.y * sizeOfSquare);
+      x.value = withTiming(temporaryPosition.x * squareWidth);
+      y.value = withTiming(temporaryPosition.y * squareHeight);
     }
   };
 
@@ -54,9 +61,9 @@ export default function Figure({
     onPress({figure, ...position});
   };
 
-  const calculatePosition = (pixelValue) => {
+  const calculatePosition = (pixelValue, width) => {
     'worklet';
-    const index = Math.round(pixelValue / sizeOfSquare);
+    const index = Math.round(pixelValue / width);
     if (index >= 0 && index < 8) {
       return index;
     } else {
@@ -68,8 +75,10 @@ export default function Figure({
     onStart: (_, ctx) => {
       ctx.startX = x.value;
       ctx.startY = y.value;
-      const xIndex = calculatePosition(x.value);
-      const yIndex = calculatePosition(y.value);
+      const xIndex = calculatePosition(x.value, squareWidth);
+      const yIndex = calculatePosition(y.value, squareHeight);
+      zIndex.value = 1000;
+      scale.value = withTiming(1.1);
 
       runOnJS(startMovement)({x: xIndex, y: yIndex});
     },
@@ -78,8 +87,10 @@ export default function Figure({
       y.value = ctx.startY + event.translationY;
     },
     onEnd: (_) => {
-      const xIndex = calculatePosition(x.value);
-      const yIndex = calculatePosition(y.value);
+      const xIndex = calculatePosition(x.value, squareWidth);
+      const yIndex = calculatePosition(y.value, squareHeight);
+      zIndex.value = 0;
+      scale.value = withTiming(1);
 
       runOnJS(endMovement)({x: xIndex, y: yIndex, id});
     },
@@ -94,7 +105,12 @@ export default function Figure({
         {
           translateY: y.value,
         },
+        {
+          scale: scale.value,
+        },
       ],
+      zIndex: isRemoved ? -10000 : y.value + zIndex.value + 100,
+      opacity: isRemoved ? 0 : 1,
     };
   });
 
@@ -108,24 +124,45 @@ export default function Figure({
       <Animated.View
         style={[
           {
-            opacity: isRemoved ? 0 : 1,
-            width: sizeOfSquare,
-            height: sizeOfSquare,
-            backgroundColor: isWhite ? 'gray' : 'black',
+            width: squareWidth,
+            height: squareHeight,
             position: 'absolute',
-            zIndex: isRemoved
-              ? -100
-              : (isWhite && currentMove === 'w') ||
-                (!isWhite && currentMove === 'b')
-              ? 11
-              : 10,
           },
           animatedStyle,
         ]}>
         <Pressable
           onPress={handlePress}
-          style={{width: sizeOfSquare, height: sizeOfSquare}}>
-          <Text style={{color: 'white'}}>{figure}</Text>
+          style={{width: squareWidth, height: squareHeight}}>
+          <FastImage
+            source={image}
+            tintColor={'black'}
+            style={{
+              position: 'absolute',
+              width: squareWidth,
+              height: squareWidth,
+              transform: [
+                {
+                  translateY: '-7%',
+                },
+              ],
+              opacity: 0.2,
+            }}
+          />
+          <FastImage
+            source={image}
+            style={{
+              width: squareWidth,
+              height: squareWidth,
+              transform: [
+                // {scale: 0.8},
+                {scale: figure === 'p' || figure === 'P' ? 1.05 : 1.05},
+                {
+                  translateY:
+                    figure === 'p' || figure === 'P' ? '-9.5%' : '-9.5%',
+                },
+              ],
+            }}
+          />
         </Pressable>
       </Animated.View>
     </PanGestureHandler>
