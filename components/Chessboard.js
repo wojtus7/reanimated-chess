@@ -1,6 +1,7 @@
 import {View, StyleSheet, Pressable, Text} from 'react-native';
 import React from 'react';
 import {convertIndexToName} from '../helpers/Converters';
+import MoveIndicator from './MoveIndicator';
 
 export default function Figure({
   chessboardSquareWidth,
@@ -16,25 +17,18 @@ export default function Figure({
       const componentStyle = {
         height: chessboardSquareHeight,
         width: chessboardSquareWidth,
-        backgroundColor: (j + i) % 2 === 0 ? '#777e88' : '#4E5660',
+        backgroundColor: (j + i) % 2 === 0 ? '#fbf1cf' : '#4e5660',
       };
       lineComponents.push(
         <Pressable
           key={`square_${i}_${j}`}
           onPress={() => onPressSquare({x: j, y: i})}>
-          <View
-            style={[
-              componentStyle,
-              {
-                opacity: 0.6,
-                borderColor: currentPossibleMoves.includes(
-                  convertIndexToName({x: j, y: i}),
-                )
-                  ? 'green'
-                  : 'transparent',
-                borderWidth: 2,
-              },
-            ]}>
+          <View style={componentStyle}>
+            <MoveIndicator
+              isVisible={currentPossibleMoves.includes(
+                convertIndexToName({x: j, y: i}),
+              )}
+            />
             <Text style={styles.text}>{convertIndexToName({x: j, y: i})}</Text>
           </View>
         </Pressable>,
@@ -51,7 +45,7 @@ export default function Figure({
 }
 
 const styles = StyleSheet.create({
-  wrapper: {position: 'absolute'},
+  wrapper: {position: 'absolute', borderRadius: 10, overflow: 'hidden'},
   row: {flexDirection: 'row'},
-  text: {opacity: 0},
+  text: {opacity: 0, position: 'absolute'},
 });

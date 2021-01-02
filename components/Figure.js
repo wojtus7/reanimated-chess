@@ -4,6 +4,7 @@ import Animated, {
   useAnimatedGestureHandler,
   withTiming,
   runOnJS,
+  withDelay,
 } from 'react-native-reanimated';
 import {PanGestureHandler} from 'react-native-gesture-handler';
 import {Pressable} from 'react-native';
@@ -55,12 +56,16 @@ export default function Figure({
     try {
       const shouldFight = endMoveFigure(newPosition, id);
       setPosition(newPosition);
+      zIndex.value = withDelay(0, withTiming(0, {duration: 100}));
       x.value = withTiming(newPosition.x * squareWidth);
       y.value = withTiming(newPosition.y * squareHeight);
+      scale.value = withTiming(1);
     } catch (error) {
       console.log(error);
+      zIndex.value = withDelay(0, withTiming(0, {duration: 0}));
       x.value = withTiming(temporaryPosition.x * squareWidth);
       y.value = withTiming(temporaryPosition.y * squareHeight);
+      scale.value = withTiming(1);
     }
   };
 
@@ -84,7 +89,7 @@ export default function Figure({
       ctx.startY = y.value;
       const xIndex = calculatePosition(x.value, squareWidth);
       const yIndex = calculatePosition(y.value, squareHeight);
-      zIndex.value = 1000;
+      zIndex.value = 10000;
       scale.value = withTiming(1.1);
 
       runOnJS(startMovement)({x: xIndex, y: yIndex});
@@ -96,8 +101,6 @@ export default function Figure({
     onEnd: (_) => {
       const xIndex = calculatePosition(x.value, squareWidth);
       const yIndex = calculatePosition(y.value, squareHeight);
-      zIndex.value = 0;
-      scale.value = withTiming(1);
 
       runOnJS(endMovement)({x: xIndex, y: yIndex, id});
     },

@@ -10,6 +10,8 @@ import {
   convertFENtoFigures,
   convertFENtoIdOnBoard,
 } from './helpers/Converters';
+import GrassTop from './components/GrassTop';
+import GrassBottom from './components/GrassBottom';
 
 const squareWidth = (Dimensions.get('window').width - 30) / 8;
 const squareHeight = (Dimensions.get('window').width - 30) / 8 - 5;
@@ -77,6 +79,7 @@ export default function AnimatedStyleUpdateExample() {
 
   return (
     <View style={{flex: 1}}>
+      <GrassBottom chessboardHeight={squareHeight * 8} />
       <View style={styles.container}>
         <Chessboard
           chessboardSquareWidth={squareWidth}
@@ -101,6 +104,7 @@ export default function AnimatedStyleUpdateExample() {
           />
         ))}
       </View>
+      <GrassTop chessboardHeight={squareHeight * 8} />
       <ChatWindow />
     </View>
   );
@@ -108,7 +112,6 @@ export default function AnimatedStyleUpdateExample() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     flexDirection: 'column',
     top: 100,
     left: 15,
