@@ -12,6 +12,7 @@ import {
 } from './helpers/Converters';
 import GrassTop from './components/GrassTop';
 import GrassBottom from './components/GrassBottom';
+import CheckInfo from './components/CheckInfo';
 
 const squareWidth = (Dimensions.get('window').width - 30) / 8;
 const squareHeight = (Dimensions.get('window').width - 30) / 8 - 5;
@@ -22,6 +23,7 @@ export default function AnimatedStyleUpdateExample() {
     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
   );
   const [currentMoveColor, setCurrentMoveColor] = useState('w');
+  const [isCheck, setCheck] = useState(false);
   const [figuresState, setFiguresState] = useState(convertFENtoIdOnBoard());
   const [currentPossibleMoves, setCurrentPossibleMoves] = useState([]);
 
@@ -72,6 +74,7 @@ export default function AnimatedStyleUpdateExample() {
 
     setGameState(actualizedGameState);
     setCurrentMoveColor(actualizedGameState.split(' ')[1]);
+    setCheck(status(actualizedGameState).check);
     return shouldFight;
   };
 
@@ -105,6 +108,7 @@ export default function AnimatedStyleUpdateExample() {
         ))}
       </View>
       <GrassTop chessboardHeight={squareHeight * 8} />
+      <CheckInfo chessboardHeight={squareHeight * 8} isCheck={isCheck} />
       <ChatWindow />
     </View>
   );

@@ -45,7 +45,14 @@ export default function Figure({
 }
 
 const styles = StyleSheet.create({
-  wrapper: {position: 'absolute', borderRadius: 10, overflow: 'hidden'},
+  wrapper: {
+    position: 'absolute',
+    borderRadius: 10,
+    overflow: 'hidden',
+    borderWidth: 2,
+    left: -2,
+    top: -2,
+  },
   row: {flexDirection: 'row'},
   text: {opacity: 0, position: 'absolute'},
 });

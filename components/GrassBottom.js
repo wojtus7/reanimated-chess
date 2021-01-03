@@ -20,7 +20,7 @@ export default function GrassBottom({chessboardHeight}) {
 const styles = StyleSheet.create({
   wrapper: {
     width: '100%',
-    backgroundColor: '#60d9a7',
+    backgroundColor: '#fff',
     top: 60,
     paddingHorizontal: 15,
     flexDirection: 'row',
